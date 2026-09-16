@@ -1,0 +1,1386 @@
+/* ==========================================================================
+   Brian Killeen Music — vintage 60s stylesheet
+   ========================================================================== */
+
+/* Native cross-document View Transitions (Chrome/Edge 126+; other browsers
+   ignore this at-rule and just navigate normally — no JS needed either way) */
+@view-transition {
+  navigation: auto;
+}
+
+/* ---- Fonts (self-hosted, no external requests) ---- */
+@font-face {
+  font-family: "Ferrum";
+  src: url("../fonts/Ferrum-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hyperlegible Sans";
+  src: url("../fonts/HyperlegibleSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hyperlegible Sans";
+  src: url("../fonts/HyperlegibleSans-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hyperlegible Sans";
+  src: url("../fonts/HyperlegibleSans-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hyperlegible Sans";
+  src: url("../fonts/HyperlegibleSans-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ---- Design tokens ---- */
+:root {
+  --paper: #ffffff;
+  --paper-alt: #f4f4f4;
+  --ink: #181510;
+  --ink-soft: #181510cc;
+  --ink-faint: #18151033;
+  --yellow: #e8b923;
+  --yellow-deep: #c99a15;
+  --gold-ink: #8a6b12; /* darker gold for text-on-paper: meets 4.5:1 contrast, unlike --yellow-deep */
+  --black-band: #16130f;
+
+  --font-display: "Ferrum", "Arial Narrow", sans-serif;
+  --font-body: "Hyperlegible Sans", "Helvetica Neue", Arial, sans-serif;
+
+  --max-width: 1100px;
+  --gap: clamp(1.25rem, 2vw, 2.5rem);
+}
+
+/* ---- Reset ---- */
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body, h1, h2, h3, h4, p, figure, blockquote { margin: 0; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; }
+ul { list-style: none; margin: 0; padding: 0; }
+
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* ---- Paper-grain overlay ---- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+  background-size: 220px 220px;
+}
+
+/* ---- Name figure (Home only) ----
+   Hand-traced silhouette used as a logomark beside "Brian Killeen" — sized
+   to match the live-measured cap-height of the "K" (see .k-measure and
+   main.js), so it scales exactly with the text at every point in the
+   scroll. Stays attached to the name the whole way from the big centred
+   landing state through to settling beside it in the header. */
+.name-figure {
+  position: fixed;
+  background-image: url("../img/name-figure.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  z-index: 110;
+  pointer-events: none;
+}
+/* Invisible reference glyph, same font/weight, font-size synced to the
+   name's current size each frame — measured, never shown. */
+.k-measure {
+  position: fixed;
+  top: -9999px;
+  left: -9999px;
+  visibility: hidden;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  .name-figure { display: none; }
+}
+
+/* ---- Layout helpers ---- */
+.wrap {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+section { padding: clamp(3rem, 7vw, 6rem) 0; }
+.rule {
+  border: none;
+  border-top: 1px solid var(--ink-faint);
+}
+
+/* ---- Reveal-on-scroll ---- */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s ease, transform 0.7s ease;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger.is-visible > * { opacity: 1; transform: translateY(0); }
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0.05s; }
+.reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.15s; }
+.reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.25s; }
+.reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.35s; }
+.reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.45s; }
+.reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 0.55s; }
+.reveal-stagger.is-visible > *:nth-child(7) { transition-delay: 0.65s; }
+
+/* ---- Typography ---- */
+h1, .h1 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: 0.01em;
+  font-size: clamp(2.6rem, 7vw, 5rem);
+}
+h2, .h2 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 1.15;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+}
+h3, .h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.2rem, 2.4vw, 1.5rem);
+}
+p.lede {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+/* ---- Hand-drawn SVG underline ---- */
+.underline-draw {
+  position: relative;
+  display: inline-block;
+}
+.underline-draw svg {
+  position: absolute;
+  left: 0;
+  bottom: -0.15em;
+  width: 100%;
+  height: 0.5em;
+  overflow: visible;
+}
+.underline-draw svg path {
+  fill: none;
+  stroke: var(--yellow);
+  stroke-width: 4;
+  stroke-linecap: round;
+  stroke-dasharray: 240;
+  stroke-dashoffset: 240;
+  transition: stroke-dashoffset 0.45s ease;
+}
+.underline-draw.is-active svg path {
+  stroke-dashoffset: 0;
+}
+
+/* ---- Header / Nav (corner icon + full overlay menu) ---- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--paper) 92%, transparent);
+  backdrop-filter: blur(6px);
+  border-bottom: 1px solid var(--ink-faint);
+}
+.site-header .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 84px;
+}
+.wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+/* Static match of the Home page's settled logo lockup (see .name-figure) —
+   sized in em so it tracks the wordmark's own font-size everywhere else. */
+.wordmark-figure {
+  display: inline-block;
+  width: 0.866em;
+  height: 1.3em;
+  background-image: url("../img/name-figure.svg");
+  background-repeat: no-repeat;
+  background-size: contain;
+  flex-shrink: 0;
+}
+
+/* Tuning-dial menu button: the tick shows which "channel" (page) you're on,
+   and the number in the middle confirms it. Always visible. */
+.nav-toggle {
+  position: relative;
+  z-index: 210;
+  width: 44px;
+  height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  flex-shrink: 0;
+  color: var(--ink);
+}
+.nav-toggle .dial {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.nav-toggle .dial-tick {
+  transform-origin: 22px 22px;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.nav-toggle.is-open .dial-tick {
+  animation: dial-spin 0.5s ease;
+}
+@keyframes dial-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+.nav-toggle .dial-channel {
+  position: relative;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+}
+
+/* Full-screen overlay menu */
+.main-nav {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 200;
+  background: var(--paper);
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.6rem;
+}
+.main-nav.is-open { display: flex; }
+.main-nav a {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.main-nav a:not(.btn) {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: clamp(1.3rem, 4vw, 1.8rem);
+  letter-spacing: 0.02em;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+}
+.main-nav .channel-num {
+  font-family: var(--font-display);
+  color: var(--gold-ink);
+  font-size: 0.65em;
+  margin-right: 0.4em;
+}
+.main-nav.is-open a { opacity: 1; transform: translateY(0); }
+.main-nav.is-open a:nth-child(1) { transition-delay: 0.05s; }
+.main-nav.is-open a:nth-child(2) { transition-delay: 0.1s; }
+.main-nav.is-open a:nth-child(3) { transition-delay: 0.15s; }
+.main-nav.is-open a:nth-child(4) { transition-delay: 0.2s; }
+.main-nav.is-open a.btn { transition-delay: 0.25s; }
+.main-nav a[aria-current="page"] {
+  color: var(--gold-ink);
+}
+body.nav-open { overflow: hidden; }
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 0.02em;
+  padding: 0.7rem 1.4rem;
+  border-radius: 3px;
+  border: 1.5px solid var(--ink);
+  transition: box-shadow 0.25s ease, transform 0.25s ease, background 0.25s ease, color 0.25s ease, opacity 0.4s ease;
+}
+.btn-solid {
+  background: var(--yellow);
+  border-color: var(--yellow-deep);
+}
+.btn-solid:hover, .btn-solid:focus-visible {
+  box-shadow: 0 0 0 3px var(--yellow-deep), 0 10px 26px -10px var(--yellow-deep);
+  transform: translateY(-2px);
+}
+.btn-outline:hover, .btn-outline:focus-visible {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateY(-2px);
+}
+.btn-whatsapp {
+  background: #1c1a17;
+  color: var(--paper);
+  border-color: #1c1a17;
+}
+.btn-whatsapp:hover, .btn-whatsapp:focus-visible {
+  box-shadow: 0 0 0 3px var(--yellow), 0 10px 26px -10px #000;
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-toggle.is-open .dial-tick { animation: none; }
+}
+
+/* ---- Hero (typography only, no imagery) ---- */
+.hero {
+  padding-top: clamp(2rem, 6vw, 4rem);
+  padding-bottom: clamp(2rem, 6vw, 4rem);
+  position: relative;
+}
+.hero .wrap {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+/* Decorative margin flourish beside the hero title — only where there's
+   genuine gutter space for it, so it never crowds the text. */
+.hero-figure {
+  position: absolute;
+  right: clamp(1rem, 6vw, 6rem);
+  top: 100%;
+  transform: translateY(-50%);
+  z-index: 0;
+  height: clamp(110px, 14vw, 190px);
+  aspect-ratio: 486.24 / 1005.94;
+  background-image: url("../img/rose-figure.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+  opacity: 0.85;
+}
+@media (max-width: 1100px) {
+  .hero-figure { display: none; }
+}
+/* Decorative margin flourish on the left, sitting at the boundary between
+   ceremony-types and reception — mirrors .hero-figure's approach (anchored
+   to the section's bottom edge, text kept above via z-index). */
+.ceremony-types {
+  position: relative;
+}
+.ceremony-types .wrap {
+  position: relative;
+  z-index: 1;
+}
+.ceremony-figure {
+  position: absolute;
+  left: clamp(1rem, 6vw, 6rem);
+  top: 100%;
+  transform: translateY(-50%);
+  z-index: 0;
+  height: clamp(110px, 14vw, 190px);
+  aspect-ratio: 1091.5 / 1207.4;
+  background-image: url("../img/scroll-figure.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+  opacity: 0.85;
+}
+@media (max-width: 1100px) {
+  .ceremony-figure { display: none; }
+}
+.hero-title {
+  font-size: clamp(2.2rem, 5.5vw, 3.4rem);
+}
+.weddings .hero-title {
+  font-size: clamp(3.5rem, 10vw, 6rem);
+}
+.hero-copy {
+  max-width: 50rem;
+  text-align: center;
+}
+.hero-tagline {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.8vw, 1.5rem);
+  margin-top: 0.6rem;
+  opacity: 0.65;
+}
+.hero-actions {
+  margin-top: 2rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1rem;
+}
+
+/* ---- Intro stage (Home only): name recedes into the distance on scroll,
+   then settles into the header wordmark as the page reveals itself ---- */
+.intro-spacer {
+  height: 105vh;
+}
+.intro-name {
+  position: fixed;
+  /* top/left set directly in px by JS each frame — deliberately no
+     transform here: transformed/composited text renders visibly
+     blurrier at small sizes than text positioned via top/left. */
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3.2rem, 15vw, 11rem);
+  line-height: 1;
+  white-space: nowrap;
+  text-align: center;
+  z-index: 110;
+  pointer-events: none;
+}
+.intro-name span {
+  display: inline-block;
+  opacity: 0;
+  transform: translateY(18px);
+  animation: rise 0.8s ease forwards;
+}
+@keyframes rise {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* The big name IS the wordmark on Home — hide the header's own wordmark
+   (kept in the DOM so layout/spacing stays identical) and only fade in
+   the menu icon once the name has settled. */
+body.home .site-header {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+body.home .site-header .wordmark {
+  visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.home .site-header {
+    position: sticky;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+  body.home .site-header .wordmark {
+    visibility: visible !important;
+  }
+  .intro-spacer { height: auto; padding: 4rem 0 2rem; }
+  .intro-name {
+    position: static;
+    display: block;
+    margin: 0 auto;
+    transform: none !important;
+  }
+  .intro-name span { animation: none; opacity: 1; transform: none; }
+}
+
+/* ---- Numbered list (set-list style — replaces boxed cards) ---- */
+.list-numbered {
+  display: flex;
+  flex-direction: column;
+}
+.list-numbered-item {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 0.3rem 1.5rem;
+  padding: 1.6rem 0;
+  border-top: 1px solid var(--ink-faint);
+}
+.list-numbered-item:last-child {
+  border-bottom: 1px solid var(--ink-faint);
+}
+.list-numbered-item .num {
+  font-family: var(--font-display);
+  color: var(--gold-ink);
+  font-size: 1.4rem;
+  line-height: 1.4;
+}
+.list-numbered-item h3 {
+  margin-bottom: 0.3rem;
+}
+.list-numbered-item p {
+  color: var(--ink-soft);
+  max-width: 60ch;
+}
+
+/* ---- Set-list rows (homepage Explore section) ---- */
+.set-list {
+  width: 100%;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--ink-faint);
+}
+.set-list li {
+  border-bottom: 1px solid var(--ink-faint);
+}
+.set-list a {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr auto;
+  align-items: center;
+  gap: 1rem;
+  padding: clamp(1rem, 2.5vw, 1.5rem) 0.5rem;
+  text-align: left;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.set-list a:hover,
+.set-list a:focus-visible {
+  background: #e8b92312;
+  outline: none;
+}
+.set-list__num {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  color: var(--gold-ink);
+  line-height: 1;
+  text-align: right;
+  padding-right: 0.75rem;
+  border-right: 1px solid var(--ink-faint);
+  flex-shrink: 0;
+}
+.set-list__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 3.5vw, 2rem);
+  letter-spacing: 0.01em;
+  line-height: 1;
+}
+.set-list__arrow {
+  font-size: 1.25rem;
+  color: var(--gold-ink);
+  opacity: 0;
+  transform: translateX(-6px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.set-list a:hover .set-list__arrow,
+.set-list a:focus-visible .set-list__arrow {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* ---- Video grid ---- */
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--gap);
+}
+.video-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid var(--ink-faint);
+  background: var(--black-band);
+}
+.video-frame iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.video-library-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 0.5rem;
+}
+
+/* ---- Setlist track list (Listen page) ---- */
+.setlist-library { position: relative; }
+
+.track-list {
+  list-style: none;
+  margin: clamp(1.5rem, 4vw, 2.5rem) 0 0;
+  padding: 0;
+  border-top: 1px solid var(--ink-faint);
+}
+.track-item {
+  display: grid;
+  grid-template-columns: 2.75rem 1fr auto 1.5rem;
+  align-items: center;
+  gap: 0 0.9rem;
+  padding: clamp(0.85rem, 2.5vw, 1.2rem) 0.5rem;
+  border-bottom: 1px solid var(--ink-faint);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  user-select: none;
+}
+.track-item:hover        { background: rgba(232,185,35,0.07); }
+.track-item.is-active    { background: rgba(232,185,35,0.13); }
+.track-item:focus-visible { outline: 2px solid var(--yellow); outline-offset: -2px; }
+
+.track-num {
+  font-family: var(--font-display);
+  font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+  color: var(--gold-ink);
+  text-align: right;
+  padding-right: 0.75rem;
+  border-right: 1px solid var(--ink-faint);
+  line-height: 1;
+  transition: color 0.15s ease;
+}
+.track-item.is-active .track-num { color: var(--yellow); }
+
+.track-title {
+  font-family: var(--font-display);
+  font-size: clamp(1rem, 2.5vw, 1.45rem);
+  line-height: 1.1;
+}
+.track-duration {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.track-play-icon {
+  width: 1.25rem;
+  height: 1.25rem;
+  color: var(--gold-ink);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.track-item:hover .track-play-icon,
+.track-item.is-active .track-play-icon { opacity: 1; }
+
+/* ---- Sticky player bar ---- */
+.player-bar {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  z-index: 200;
+  background: var(--ink);
+  color: var(--paper);
+  padding: 0.65rem 1.25rem 0.8rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  transform: translateY(110%);
+  transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 -2px 16px rgba(0,0,0,0.25);
+}
+.player-bar.is-visible { transform: translateY(0); }
+
+.player-row-top {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.player-info {
+  flex: 1;
+  min-width: 0;
+}
+.player-now-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  line-height: 1;
+  margin-bottom: 0.2rem;
+}
+.player-title {
+  font-family: var(--font-display);
+  font-size: clamp(0.9rem, 2.5vw, 1.15rem);
+  line-height: 1;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.player-btn {
+  background: none;
+  border: none;
+  color: var(--paper);
+  cursor: pointer;
+  padding: 0.35rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+  line-height: 1;
+}
+.player-btn:hover,
+.player-btn:focus-visible { opacity: 1; outline: none; }
+.player-btn--play {
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1.5px solid rgba(255,255,255,0.3);
+  border-radius: 50%;
+  opacity: 1;
+  color: var(--yellow);
+}
+.player-btn--play:hover { border-color: var(--yellow); }
+
+.player-row-bottom {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.player-time {
+  font-size: 0.65rem;
+  font-variant-numeric: tabular-nums;
+  color: rgba(255,255,255,0.4);
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 2.2rem;
+}
+.player-progress {
+  flex: 1;
+  height: 3px;
+  background: rgba(255,255,255,0.15);
+  border-radius: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: height 0.15s ease;
+}
+.player-progress:hover { height: 5px; }
+.player-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--yellow);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+/* Nudge page content up so the sticky bar doesn't cover the last section
+   when the player is active. Applied via JS toggling body class. */
+body.player-open main { padding-bottom: 5.5rem; }
+
+/* ---- Audio-only list (Listen page) — same set-list treatment as
+   .list-numbered, swapping the number for a native audio player. ---- */
+.audio-list {
+  width: 100%;
+  max-width: 42rem;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+.audio-item {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.4rem 0;
+  border-top: 1px solid var(--ink-faint);
+  text-align: left;
+}
+.audio-list .audio-item:last-child {
+  border-bottom: 1px solid var(--ink-faint);
+}
+.audio-item h3 {
+  margin-bottom: 0.2rem;
+}
+.audio-item p {
+  color: var(--ink-soft);
+}
+.audio-item audio {
+  flex-shrink: 0;
+  max-width: 100%;
+}
+.audio-library {
+  position: relative;
+}
+.audio-library .wrap {
+  position: relative;
+  z-index: 1;
+}
+/* Decorative margin flourish to the right of the audio list — only where
+   there's genuine gutter space for it, so it never crowds the tracks. */
+.audio-figure {
+  position: absolute;
+  right: clamp(1rem, 6vw, 6rem);
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 0;
+  height: clamp(160px, 20vw, 280px);
+  aspect-ratio: 960 / 1353;
+  background-image: url("../img/rte-figure.svg");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+  opacity: 0.9;
+}
+@media (max-width: 1100px) {
+  .audio-figure {
+    display: none;
+  }
+}
+
+/* ---- Quote ---- */
+.quote-stack {
+  display: flex;
+  flex-direction: column;
+  gap: clamp(2.5rem, 6vw, 4.5rem);
+}
+.quote {
+  position: relative;
+  font-family: var(--font-body);
+  font-style: italic;
+  font-size: clamp(1.3rem, 3vw, 1.9rem);
+  max-width: 46rem;
+  line-height: 1.4;
+  padding-top: 1.8rem;
+}
+.quote::before {
+  content: "\201C";
+  position: absolute;
+  top: -0.6rem;
+  left: -0.06em;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-size: 4.5rem;
+  line-height: 1;
+  color: var(--yellow);
+}
+.quote-stack blockquote:nth-of-type(even) {
+  align-self: flex-end;
+  text-align: right;
+}
+.quote-stack blockquote:nth-of-type(even)::before {
+  left: auto;
+  right: -0.06em;
+}
+.quote cite {
+  display: block;
+  margin-top: 1rem;
+  font-family: var(--font-body);
+  font-style: normal;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+
+.testimonial {
+  position: relative;
+}
+.testimonial .quote-stack {
+  /* position/z-index removed — figure now lives inside the wrap as
+     first child, so normal DOM stacking keeps text above it */
+}
+/* Decorative margin flourish beside the quote(s) — only where there's
+   genuine gutter space for it, so it never crowds the text. */
+.testimonial-figure {
+  position: absolute;
+  right: clamp(1rem, 6vw, 6rem);
+  z-index: 0;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+}
+@media (max-width: 1100px) {
+  /* Switch quote-stack to block so float:right on the figure works.
+     Also resets even-quote right-alignment — not readable at mobile width. */
+  .quote-stack {
+    display: block;
+  }
+  .quote-stack .quote {
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
+  }
+  .quote-stack blockquote:nth-of-type(even) {
+    align-self: auto;
+    text-align: left;
+  }
+  .quote-stack blockquote:nth-of-type(even)::before {
+    left: -0.06em;
+    right: auto;
+  }
+
+  /* All testimonial figures: absolute at bottom-right on mobile */
+  .testimonial-figure {
+    position: absolute;
+    float: none;
+    bottom: 0;
+    right: clamp(0.5rem, 4vw, 2rem);
+    top: auto;
+    height: clamp(160px, 42vw, 230px);
+    margin: 0;
+    transform: none;
+  }
+  /* Pad sections so text clears the figure */
+  .testimonial,
+  .reviews {
+    padding-bottom: clamp(170px, 46vw, 250px);
+  }
+}
+/* Variant backgrounds — applied at all sizes */
+.testimonial-figure--center {
+  aspect-ratio: 855 / 1286;
+  background-image: url("../img/brian-room.svg");
+}
+.testimonial-figure--bottom {
+  aspect-ratio: 978.6 / 1104.32;
+  background-image: url("../img/brian-preston.svg");
+  background-position: bottom center;
+}
+.testimonial-figure--mic {
+  aspect-ratio: 1299.68 / 1399.68;
+  background-image: url("../img/mic-figure.svg");
+  background-position: bottom center;
+}
+/* Desktop positioning & sizing — not applied on mobile where float layout takes over */
+@media (min-width: 1101px) {
+  /* Single-quote pages: centred vertically in the section. */
+  .testimonial-figure--center {
+    top: 50%;
+    transform: translateY(-50%);
+    height: clamp(180px, 22vw, 320px);
+  }
+  /* Stacked-quote pages: anchored to the bottom beside the last quote. */
+  .testimonial-figure--bottom {
+    bottom: 0;
+    height: clamp(120px, 14vw, 200px);
+  }
+  .testimonial-figure--mic {
+    bottom: 0;
+    height: clamp(140px, 18vw, 260px);
+  }
+}
+
+/* ---- Steps ---- */
+.steps {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
+  counter-reset: step;
+}
+.step {
+  position: relative;
+  padding-left: 3rem;
+}
+.step::before {
+  counter-increment: step;
+  content: counter(step);
+  font-family: var(--font-display);
+  position: absolute;
+  left: 0; top: -0.2rem;
+  font-size: 2rem;
+  color: var(--gold-ink);
+}
+
+/* ---- Contact (simple: phone, email, socials) ---- */
+.contact-simple {
+  position: relative;
+  text-align: center;
+  border-top: 1px solid var(--ink-faint);
+  padding: clamp(3rem, 7vw, 5rem) 0;
+}
+.contact-simple h2 {
+  font-size: clamp(1.6rem, 3vw, 2.1rem);
+  margin-bottom: 0;
+}
+.contact-links {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1.75rem;
+}
+.contact-link {
+  font-size: clamp(1rem, 2vw, 1.2rem);
+  color: var(--ink);
+  transition: color 0.15s;
+}
+.contact-link:hover {
+  color: var(--gold-ink);
+}
+.contact-socials {
+  display: flex;
+  justify-content: center;
+  gap: 1.75rem;
+  font-size: 0.95rem;
+  color: var(--ink-soft);
+}
+.contact-socials a {
+  color: var(--ink-soft);
+  transition: color 0.15s;
+}
+.contact-socials a:hover {
+  color: var(--gold-ink);
+}
+
+/* ---- Contact form ---- */
+.contact-form {
+  margin: 2rem auto 0;
+  max-width: 38rem;
+  text-align: left;
+}
+.form-row {
+  display: flex;
+  gap: 1.1rem;
+  flex-wrap: wrap;
+}
+.form-row--2 > .form-group {
+  flex: 1 1 calc(50% - 0.55rem);
+  min-width: 200px;
+}
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  width: 100%;
+  margin-bottom: 1.1rem;
+}
+.form-group label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+  line-height: 1;
+}
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--ink-faint);
+  border-radius: 3px;
+  padding: 0.65rem 0.8rem;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--ink);
+  line-height: 1.4;
+  transition: border-color 0.15s ease;
+  appearance: none;
+}
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--ink-soft);
+  opacity: 0.45;
+}
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--gold-ink);
+}
+.form-group textarea {
+  resize: vertical;
+  min-height: 7rem;
+}
+.form-submit {
+  margin-top: 0.5rem;
+  text-align: center;
+}
+.contact-alt-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  opacity: 0.5;
+  margin: 2rem 0 0.75rem;
+}
+
+/* ---- Testimonials section (weddings + figs pages) ---- */
+.quote-stack--compact .quote {
+  font-size: clamp(0.9rem, 2vw, 1rem);
+}
+.quote-stack--compact .quote::before {
+  font-size: 3rem;
+}
+.testimonials-heading {
+  text-align: center;
+  margin-bottom: 2.5rem;
+}
+
+/* ---- Flower figures (hand-drawn botanical decorations) ---- */
+.reception    { position: relative; }
+.how-it-works { position: relative; }
+.page-links   { position: relative; }
+.video-library { position: relative; }
+
+.flower-fig {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  width: clamp(130px, 16vw, 210px);
+  height: auto;
+}
+.flower-fig img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.flower-fig--right { right: clamp(0.5rem, 5vw, 5rem); }
+.flower-fig--left  { left:  clamp(0.5rem, 5vw, 5rem); }
+.flower-fig--mid   { top: 0; transform: translateY(-50%); }
+.contact-heading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+}
+.flower-fig--contact {
+  position: static;
+  transform: none;
+  width: clamp(40px, 5vw, 65px);
+  flex-shrink: 0;
+}
+@media (max-width: 1100px) {
+  .flower-fig { display: none; }
+  .flower-fig--contact { display: block; }
+}
+
+/* ---- Section ornaments (centred botanical dividers, mobile only) ---- */
+.section-ornament {
+  text-align: center;
+  padding: 0;
+  line-height: 0;
+  pointer-events: none;
+}
+.section-ornament img {
+  width: clamp(60px, 9vw, 100px);
+  height: auto;
+  display: inline-block;
+}
+@media (min-width: 1101px) {
+  .section-ornament { display: none; }
+}
+
+/* ---- Thank you page ---- */
+.thankyou-hero {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+.thankyou-title {
+  font-size: clamp(3rem, 10vw, 6rem);
+  line-height: 1;
+}
+.thankyou-message {
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  margin-top: 0.75rem;
+  color: var(--ink-soft);
+}
+
+/* ---- Footer ---- */
+.site-footer {
+  padding: 1.25rem 0;
+  text-align: center;
+  border-top: 1px solid var(--ink-faint);
+}
+.footer-grid small {
+  color: var(--ink-soft);
+  font-size: 0.8rem;
+}
+.social-row {
+  display: flex;
+  gap: 0.6rem;
+}
+.social-row a {
+  width: 28px; height: 28px;
+  font-size: 0.75rem;
+  display: grid; place-items: center;
+  border: 1px solid var(--ink-faint);
+  border-radius: 50%;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.social-row a:hover { background: var(--ink); color: var(--paper); }
+
+/* ---- Brian & Figs page: big centred title, echoing the Home wordmark
+   treatment, plus a centred layout throughout — reserving room either side
+   of the title for companion vector art to be added later. ---- */
+.figs-title {
+  font-size: clamp(4rem, 15vw, 10rem);
+  text-align: center;
+}
+body.figs .figs-hero {
+  min-height: 70vh;
+  display: flex;
+  align-items: center;
+}
+/* Art is transparent (ink only, no card background) and sits in its own
+   un-positioned layer behind the text — .wrap gets a real stacking context
+   above it, so at any viewport width where art and title happen to
+   overlap, the title always wins and stays fully legible. */
+.figs-flank {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 0;
+  height: clamp(160px, 26vw, 380px);
+  width: auto;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  pointer-events: none;
+}
+.figs-flank--figs {
+  right: clamp(0.5rem, 4vw, 4rem);
+  aspect-ratio: 1057 / 1351;
+  background-image: url("../img/figs-figure.svg");
+}
+.figs-flank--brian {
+  left: clamp(0.5rem, 4vw, 4rem);
+  aspect-ratio: 1083 / 1922;
+  background-image: url("../img/brian-figure.svg");
+  /* Brian's silhouette reads narrower than Figs' at the same height
+     (it's a slimmer pose), so it's scaled up a bit to match visually. */
+  height: clamp(208px, 34vw, 494px);
+}
+body.figs .figs-hero .wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  z-index: 1;
+}
+/* Below the point where the flanking art would crowd the title, drop the
+   absolute flanking entirely and lay the section out as title-on-top,
+   the two figures side by side underneath — still present, just
+   re-arranged, rather than hidden. */
+@media (max-width: 1000px) {
+  body.figs .figs-hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "title title" "brian figs";
+    row-gap: clamp(1.5rem, 5vw, 2.5rem);
+    column-gap: 1rem;
+    align-items: center;
+    justify-items: center;
+    min-height: auto;
+    padding-top: clamp(2rem, 6vw, 4rem);
+    padding-bottom: clamp(2rem, 6vw, 4rem);
+  }
+  body.figs .figs-hero .wrap {
+    grid-area: title;
+  }
+  .figs-flank {
+    position: static;
+    transform: none;
+    z-index: auto;
+    height: clamp(120px, 38vw, 220px);
+  }
+  .figs-flank--figs {
+    grid-area: figs;
+    justify-self: start;
+  }
+  .figs-flank--brian {
+    grid-area: brian;
+    justify-self: end;
+    height: clamp(156px, 49vw, 286px);
+  }
+}
+/* Centred layout, site-wide: same treatment the Brian & Figs page
+   introduced, now applied to every page's equivalent sections — heading
+   and lede centred, but lists/grids underneath keep their own natural
+   (left-aligned or full-width) layout rather than being squeezed centre. */
+.intro .wrap,
+.reception .wrap,
+.ceremony-types .wrap,
+.ceremony-detail .wrap,
+.how-it-works .wrap,
+.duo-bio .wrap,
+.services .wrap,
+.page-links .wrap,
+.reviews .wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+.intro p.lede,
+.reception p.lede,
+.duo-bio p.lede {
+  max-width: 60ch;
+}
+.reviews {
+  position: relative;
+}
+.reviews .wrap {
+  position: relative;
+  z-index: 1;
+}
+/* Reviews: like .quote-stack but every quote centred, no alternating
+   left/right rhythm — this page is centred throughout, not editorial. */
+.review-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(2.5rem, 6vw, 4.5rem);
+  width: 100%;
+}
+.list-numbered {
+  width: 100%;
+  max-width: 42rem;
+  text-align: left;
+}
+.steps {
+  width: 100%;
+}
+.video-frame {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 860px) {
+  .video-grid, .steps, .field-row { grid-template-columns: 1fr; }
+  .list-numbered-item { grid-template-columns: 2.4rem 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-title span, .reveal, .reveal-stagger > *, .main-nav a {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

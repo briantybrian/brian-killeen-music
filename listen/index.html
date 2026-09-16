@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Listen | Brian Killeen Music</title>
+<meta name="description" content="Watch and listen to Brian Killeen performing wedding ceremony and reception music, on YouTube and audio-only.">
+<link rel="stylesheet" href="/assets/css/style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap">
+    <a href="/" class="wordmark">Brian Killeen<span class="wordmark-figure" aria-hidden="true"></span></a>
+    <button class="nav-toggle" aria-label="Open menu" aria-expanded="false">
+      <svg class="dial" viewBox="0 0 44 44" aria-hidden="true">
+        <circle cx="22" cy="22" r="19" fill="none" stroke="currentColor" stroke-width="1.2"/>
+        <line class="dial-tick" x1="22" y1="4" x2="22" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      <span class="dial-channel" aria-hidden="true">03</span>
+    </button>
+  </div>
+</header>
+
+<nav class="main-nav" aria-label="Primary">
+  <a href="/"><span class="channel-num">01</span>Home</a>
+  <a href="/weddings/"><span class="channel-num">02</span>Weddings</a>
+  <a href="/listen/" aria-current="page"><span class="channel-num">03</span>Listen</a>
+  <a href="/brian-and-figs/"><span class="channel-num">04</span>Brian &amp; Figs</a>
+  <a href="/sessions/"><span class="channel-num">05</span>Session Vocals</a>
+  <a href="#contact" class="btn btn-solid">Get in Touch</a>
+</nav>
+
+
+<main>
+
+  <section class="hero" style="padding-bottom:2rem;">
+    <div class="wrap">
+      <div class="hero-copy">
+        <h1 class="hero-title" data-stagger-text>Have a listen</h1>
+        <div class="hero-actions">
+          <!-- Placeholder channel link: swap the href below for your real YouTube channel URL -->
+          <a href="https://www.youtube.com/@brian_songs" class="btn btn-outline" target="_blank" rel="noopener">Visit the full channel</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="video-library">
+    <div class="flower-fig flower-fig--right flower-fig--mid" aria-hidden="true"><img src="/Flowers/Flower%202.svg" alt=""></div>
+    <div class="flower-fig flower-fig--left flower-fig--mid" aria-hidden="true"><img src="/Flowers/Flower%202.svg" alt="" style="transform: rotate(-22deg);"></div>
+    <div class="wrap reveal-stagger" style="display:grid; gap:var(--gap);">
+
+      <h2 style="text-align:center;">On YouTube</h2>
+
+      <div class="video-frame">
+        <!-- Placeholder embed — replace VIDEO_ID_1 with a real YouTube video ID -->
+        <iframe src="https://www.youtube.com/embed/VIDEO_ID_1" title="Ceremony performance 1" allowfullscreen loading="lazy"></iframe>
+      </div>
+
+      <div class="video-grid">
+        <div class="video-frame">
+          <!-- Placeholder embed — replace VIDEO_ID_2 -->
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID_2" title="Reception performance" allowfullscreen loading="lazy"></iframe>
+        </div>
+        <div class="video-frame">
+          <!-- Placeholder embed — replace VIDEO_ID_3 -->
+          <iframe src="https://www.youtube.com/embed/VIDEO_ID_3" title="Acoustic session" allowfullscreen loading="lazy"></iframe>
+        </div>
+      </div>
+
+      <div class="video-library-more">
+        <!-- Placeholder channel link — swap the href below for your real YouTube channel URL -->
+        <a href="https://www.youtube.com/@brian_songs" class="btn btn-outline" target="_blank" rel="noopener">See more on YouTube</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-ornament" aria-hidden="true"><img src="/Flowers/Flower%202.svg" alt=""></div>
+
+  <section class="setlist-library">
+    <div class="wrap reveal">
+      <h2 style="text-align:center;">Songs</h2>
+      <p class="lede" style="text-align:center; margin-top:0.75rem;"></p>
+
+      <!-- Track list is built automatically from audio/tracks.js — edit that file to add/remove songs -->
+      <ul class="track-list" id="track-list" aria-label="Song list"></ul>
+    </div>
+  </section>
+
+  <!-- Sticky player bar — slides up when a track is selected -->
+  <div class="player-bar" id="player-bar" role="region" aria-label="Now playing">
+    <audio id="player-audio" preload="none"></audio>
+    <div class="player-row-top">
+      <div class="player-info">
+        <div class="player-now-label">Now playing</div>
+        <div class="player-title" id="player-title">—</div>
+      </div>
+      <div class="player-controls">
+        <button class="player-btn player-btn--prev" id="player-prev" aria-label="Previous track">
+          <svg viewBox="0 0 14 14" fill="currentColor" width="14" height="14" aria-hidden="true"><rect x="0" y="0" width="3" height="14" rx="1"/><path d="M13 0L4 7l9 7V0z"/></svg>
+        </button>
+        <button class="player-btn player-btn--play" id="player-play" aria-label="Play">
+          <svg class="icon-play" viewBox="0 0 10 12" fill="currentColor" width="12" height="14" aria-hidden="true"><path d="M0 0l10 6-10 6z"/></svg>
+          <svg class="icon-pause" viewBox="0 0 10 12" fill="currentColor" width="12" height="14" aria-hidden="true" style="display:none"><rect x="0" y="0" width="3.5" height="12" rx="1"/><rect x="6.5" y="0" width="3.5" height="12" rx="1"/></svg>
+        </button>
+        <button class="player-btn player-btn--next" id="player-next" aria-label="Next track">
+          <svg viewBox="0 0 14 14" fill="currentColor" width="14" height="14" aria-hidden="true"><path d="M1 0l9 7-9 7V0z"/><rect x="11" y="0" width="3" height="14" rx="1"/></svg>
+        </button>
+      </div>
+    </div>
+    <div class="player-row-bottom">
+      <span class="player-time" id="player-time-cur">0:00</span>
+      <div class="player-progress" id="player-progress" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+        <div class="player-fill" id="player-fill"></div>
+      </div>
+      <span class="player-time" id="player-time-tot">–:––</span>
+    </div>
+  </div>
+
+  <section id="contact" class="contact-simple">
+    <div class="wrap reveal">
+      <div class="contact-heading">
+        <div class="flower-fig flower-fig--contact" aria-hidden="true"><img src="/Flowers/flower3.svg" alt=""></div>
+        <h2>Get in touch</h2>
+        <div class="flower-fig flower-fig--contact" aria-hidden="true"><img src="/Flowers/flower3.svg" alt="" style="transform: scaleX(-1);"></div>
+      </div>
+      <!-- ★ Replace YOUR_FORM_ID with the id from your Formspree dashboard (formspree.io/dashboard) -->
+      <form class="contact-form" action="https://formspree.io/f/xdenpwrw" method="POST">
+        <input type="hidden" name="_subject" value="New enquiry — Brian Killeen Music">
+        <!-- ★ Replace briankilleenmusic.ie below with your actual domain once the site is live -->
+        <input type="hidden" name="_next" value="https://briankilleenmusic.ie/thankyou/">
+        <div class="form-row form-row--2">
+          <div class="form-group">
+            <label for="cf-name">Your names</label>
+            <input type="text" id="cf-name" name="name" required autocomplete="name" placeholder="e.g. Jane &amp; Darren">
+          </div>
+          <div class="form-group">
+            <label for="cf-email">Email address</label>
+            <input type="email" id="cf-email" name="email" required autocomplete="email" placeholder="your@email.com">
+          </div>
+        </div>
+        <div class="form-row form-row--2">
+          <div class="form-group">
+            <label for="cf-date">Wedding date</label>
+            <input type="text" id="cf-date" name="date" placeholder="e.g. June 2026">
+          </div>
+          <div class="form-group">
+            <label for="cf-venue">Venue</label>
+            <input type="text" id="cf-venue" name="venue" placeholder="e.g. Preston House">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="cf-message">Your Query</label>
+          <textarea id="cf-message" name="message" rows="4" placeholder=""></textarea>
+        </div>
+        <div class="form-submit">
+          <button type="submit" class="btn btn-solid">Send enquiry →</button>
+        </div>
+      </form>
+      <p class="contact-alt-label">Or reach me directly</p>
+      <div class="contact-links">
+        <a href="tel:+353851368776" class="contact-link">085 136 8776</a>
+        <a href="mailto:briankilleenmusic@gmail.com" class="contact-link">briankilleenmusic@gmail.com</a>
+      </div>
+      <div class="contact-socials">
+        <a href="https://www.instagram.com/brian_songs/" aria-label="Instagram" target="_blank" rel="noopener">Instagram</a>
+        <a href="https://www.youtube.com/@brian_songs" aria-label="YouTube" target="_blank" rel="noopener">YouTube</a>
+        <a href="https://www.facebook.com/yellowsubkilleen" aria-label="Facebook" target="_blank" rel="noopener">Facebook</a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <small>&copy; 2026 Brian Killeen Music. All rights reserved.</small>
+  </div>
+</footer>
+
+<script src="/assets/js/main.js" defer></script>
+<script src="/audio/tracks.js"></script>
+<script src="/assets/js/player.js" defer></script>
+</body>
+</html>
