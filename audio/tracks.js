@@ -16,6 +16,5 @@
 // ─────────────────────────────────────────────────────────────────
 
 const TRACKS = [
-  { title: "Octave Jam",   file: "Octave Jam.mp3"  },
-  { title: "Fuck Knows",   file: "FUCK KNOWS.mp3"  },
+  { title: "Who knows", file: "FUCK KNOWS.mp3" },
 ];
