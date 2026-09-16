@@ -20,4 +20,4 @@ At the domain registrar, point DNS at GitHub Pages:
 | A | `@` | `185.199.109.153` |
 | A | `@` | `185.199.110.153` |
 | A | `@` | `185.199.111.153` |
-| CNAME | `www` | `Brian-Aurelielanguages.github.io` |
+| CNAME | `www` | `briantybrian.github.io` |
