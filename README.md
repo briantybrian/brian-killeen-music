@@ -1,6 +1,6 @@
 # Brian Killeen Music
 
-Static site for [briankilleenmusic.ie](https://briankilleenmusic.ie) — plain HTML/CSS/JS, published with GitHub Pages.
+Static site for [www.briankilleenmusic.ie](https://www.briankilleenmusic.ie) — plain HTML/CSS/JS, published with GitHub Pages.
 
 ## Run locally
 
