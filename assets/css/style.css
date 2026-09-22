@@ -103,12 +103,11 @@ body::before {
    scroll. Stays attached to the name the whole way from the big centred
    landing state through to settling beside it in the header. */
 .name-figure {
-  position: fixed;
   background-image: url("../img/name-figure.svg");
   background-repeat: no-repeat;
   background-size: contain;
-  z-index: 110;
   pointer-events: none;
+  flex-shrink: 0;
 }
 /* Invisible reference glyph, same font/weight, font-size synced to the
    name's current size each frame — measured, never shown. */
@@ -463,28 +462,59 @@ body.nav-open { overflow: hidden; }
 .intro-spacer {
   height: 105vh;
 }
-.intro-name {
+/* CSS owns the first paint: a full-viewport flex group so the name is
+   large and centred even before JS/fonts, and never depends on a
+   measured top/left that can be wrong on the first frame. */
+.intro-lockup {
   position: fixed;
-  /* top/left set directly in px by JS each frame — deliberately no
-     transform here: transformed/composited text renders visibly
-     blurrier at small sizes than text positioned via top/left. */
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  font-size: clamp(3.2rem, 15vw, 11rem);
+}
+/* Name + figure stay one flex unit for the whole intro — JS moves this
+   pair, never the two pieces independently (which let them split on
+   narrower viewports when the h1 reported full-window width). */
+.intro-pair {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  width: max-content;
+  max-width: 100%;
+  gap: 30px;
+}
+.intro-name {
   margin: 0;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(3.2rem, 15vw, 11rem);
+  font-size: 1em;
   line-height: 1;
   white-space: nowrap;
-  text-align: center;
+  width: max-content;
+  flex: 0 0 auto;
+}
+.intro-lockup .name-figure {
+  height: 1em;
+  width: calc(1em * 950.05 / 1426.29);
+  flex: 0 0 auto;
+}
+@media (max-width: 700px) {
+  .intro-lockup { padding: 0 1rem; font-size: clamp(2rem, 9vw, 4.5rem); }
+  .intro-pair { gap: 16px; }
+}
+.intro-lockup.is-driven .intro-pair {
+  position: fixed;
   z-index: 110;
-  pointer-events: none;
 }
 .intro-name span {
   display: inline-block;
-  opacity: 0;
-  transform: translateY(18px);
   animation: rise 0.8s ease forwards;
 }
 @keyframes rise {
+  from { opacity: 0; transform: translateY(18px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
@@ -514,10 +544,20 @@ body.home .site-header .wordmark {
     visibility: visible !important;
   }
   .intro-spacer { height: auto; padding: 4rem 0 2rem; }
+  .intro-lockup {
+    position: static;
+    display: flex;
+    justify-content: center;
+    inset: auto;
+    padding: 0;
+  }
+  .intro-pair {
+    position: static;
+  }
   .intro-name {
     position: static;
     display: block;
-    margin: 0 auto;
+    margin: 0;
     transform: none !important;
   }
   .intro-name span { animation: none; opacity: 1; transform: none; }
@@ -982,10 +1022,14 @@ body.player-open main { padding-bottom: 5.5rem; }
     transform: translateY(-50%);
     height: clamp(180px, 22vw, 320px);
   }
-  /* Stacked-quote pages: anchored to the bottom beside the last quote. */
+  /* Stacked-quote pages: anchored to the bottom beside the last quote.
+     Extra bottom padding keeps the final quote clear of the figure. */
   .testimonial-figure--bottom {
     bottom: 0;
     height: clamp(120px, 14vw, 200px);
+  }
+  .testimonial:has(.testimonial-figure--bottom) {
+    padding-bottom: calc(clamp(120px, 14vw, 200px) + 2rem);
   }
   .testimonial-figure--mic {
     bottom: 0;
