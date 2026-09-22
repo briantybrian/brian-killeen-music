@@ -1,0 +1,549 @@
+/* ==========================================================================
+   Reference only. Not linked from the live pages.
+   The mock HTML was removed on purpose. This file keeps the direction
+   so it can be applied to the real site later, one piece at a time.
+
+   Direction
+   - Simple, classic, professional. Black and white. No gold.
+   - Ferrum for the name and headings. Hyperlegible Sans for the reading.
+   - Big titles sit in the centre of the page: the name, page titles,
+     section headings such as Weddings or Get in touch.
+   - Paragraphs, quotes, and the form start on the left, on the same
+     edge as the small "Brian Killeen" in the header. Not a centred column.
+   - Nothing fades in. No squiggle underlines. No paper grain.
+     No frosted header. The knob does not spin.
+   - One drawing per page, unmirrored, big enough to see the line,
+     sitting in the margin beside the text. Not a row of divider icons.
+   - Wide screens: the page names in the header, current page underlined.
+     Phone: the black knob opens a full-screen menu, and stays there
+     so it can close it. The number in the knob is black.
+   - The form stays two columns: names beside email, date beside venue,
+     the note full width. Black borders, black Send button, labels in
+     the ordinary type. Under it, the phone and email as a sentence.
+     No flowers beside the heading.
+   - Quotes are liner notes: the sentence, then the names and the date.
+     No giant quotation mark.
+   - Headlines in his own voice. Drop lines like "Music for the moments
+     that matter", "Explore the site", and "Your Perfect Soundtrack".
+     Keep lines that are already his, such as "Bigger than two people
+     have any right to sound".
+
+   The rules below are the home-page trial of that direction.
+   ========================================================================== */
+
+@font-face {
+  font-family: "Ferrum";
+  src: url("/assets/fonts/Ferrum-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hyperlegible Sans";
+  src: url("/assets/fonts/HyperlegibleSans-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hyperlegible Sans";
+  src: url("/assets/fonts/HyperlegibleSans-Italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Hyperlegible Sans";
+  src: url("/assets/fonts/HyperlegibleSans-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --paper: #fff;
+  --ink: #16140f;
+  --line: rgba(22, 20, 15, 0.18);
+  --display: "Ferrum", "Arial Narrow", sans-serif;
+  --body: "Hyperlegible Sans", "Helvetica Neue", Arial, sans-serif;
+  --sheet: 1080px;
+  --col: 40rem;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--body);
+  font-size: 1.05rem;
+  line-height: 1.55;
+}
+h1, h2, h3, p, figure, blockquote { margin: 0; }
+img { max-width: 100%; display: block; }
+a { color: inherit; text-decoration: none; }
+button, input, textarea { font: inherit; color: inherit; }
+ul { list-style: none; margin: 0; padding: 0; }
+
+:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.sheet {
+  width: min(var(--sheet), calc(100% - 2.75rem));
+  margin: 0 auto;
+}
+
+/* ---- Masthead ---- */
+.mast {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--paper);
+  border-bottom: 1px solid var(--line);
+}
+.mast-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  min-height: 4.25rem;
+  position: relative;
+}
+.mark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--display);
+  font-size: 1.35rem;
+  line-height: 1;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+.mark img {
+  height: 1.35rem;
+  width: auto;
+}
+.menu-btn {
+  display: none;
+  position: relative;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  color: var(--ink);
+  flex-shrink: 0;
+}
+.menu-btn .dial {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+.menu-btn .dial-channel {
+  position: relative;
+  font-family: var(--display);
+  font-size: 0.75rem;
+  line-height: 1;
+}
+.nav {
+  display: flex;
+  align-items: baseline;
+  gap: 1.35rem;
+  font-size: 0.98rem;
+}
+.nav a[aria-current="page"] {
+  text-decoration: underline;
+  text-underline-offset: 0.28em;
+}
+.nav a:hover {
+  text-decoration: underline;
+  text-underline-offset: 0.28em;
+}
+
+/* ---- Home poster ---- */
+.poster {
+  min-height: calc(100svh - 4.25rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 2rem 1.25rem 4rem;
+}
+.lockup {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.22em;
+  font-size: clamp(3rem, 8.2vw, 6.75rem);
+}
+.poster h1 {
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1em;
+  line-height: 0.9;
+  letter-spacing: 0.01em;
+}
+.poster-figure {
+  height: 0.95em;
+  width: auto;
+  flex-shrink: 0;
+}
+.poster p {
+  margin-top: 1.6rem;
+  max-width: 16rem;
+  font-size: 1.05rem;
+  line-height: 1.45;
+}
+
+/* ---- Page title ---- */
+.page-head {
+  padding: 3.25rem 0 0;
+  text-align: center;
+}
+.page-head + .split,
+.page-head + .prose {
+  margin-top: 2.25rem;
+}
+.sheet > .prose {
+  width: min(100%, var(--col));
+  margin-left: auto;
+  margin-right: auto;
+}
+.page-head h1,
+.prose h2,
+.letter h2,
+.notes h2 {
+  font-family: var(--display);
+  font-weight: 400;
+  letter-spacing: 0.01em;
+}
+.page-head h1 {
+  font-size: clamp(3.1rem, 8vw, 5.4rem);
+  line-height: 0.92;
+}
+.standfirst {
+  margin-top: 1.15rem;
+  max-width: 34rem;
+  font-size: 1.2rem;
+  line-height: 1.45;
+}
+
+/* ---- Text + one drawing ---- */
+.split {
+  position: relative;
+  width: min(100%, var(--col));
+  margin: 3rem auto 0;
+}
+.page-head + .split { margin-top: 2.25rem; }
+.home-copy { margin-top: 0; padding-top: 4.5rem; }
+.prose h2 {
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+  line-height: 1.05;
+  margin: 2.5rem 0 0.75rem;
+}
+.prose h2:first-child { margin-top: 0; }
+.prose p + p { margin-top: 1rem; }
+.side-drawing {
+  width: 8rem;
+  margin-top: 1.75rem;
+}
+@media (min-width: 1100px) {
+  .side-drawing {
+    position: absolute;
+    left: calc(100% + 2.75rem);
+    top: 0.35rem;
+    width: 11rem;
+    margin: 0;
+  }
+  .home-copy .side-drawing { top: 3.1rem; }
+  body.home-mock .home-copy .side-drawing {
+    left: calc(40rem + 2.5rem);
+    top: 1.75rem;
+  }
+}
+
+/* ---- Contents ---- */
+.index {
+  width: min(100%, var(--col));
+  margin: 4.5rem auto 0;
+  border-top: 1px solid var(--line);
+}
+.index a {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.index a span {
+  font-family: var(--display);
+  font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+  line-height: 1;
+}
+.index a small {
+  font-size: 0.95rem;
+  text-align: right;
+}
+.index a:hover span {
+  text-decoration: underline;
+  text-underline-offset: 0.12em;
+}
+
+/* ---- Quotes, as notes ---- */
+.notes-list {
+  width: min(100%, var(--col));
+  margin: 4.5rem auto 0;
+  border-top: 1px solid var(--line);
+}
+.notes-list blockquote {
+  margin: 0;
+  padding: 1.35rem 0;
+  border-bottom: 1px solid var(--line);
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.notes-list cite {
+  display: block;
+  margin-top: 0.7rem;
+  font-style: normal;
+  font-size: 0.92rem;
+}
+
+/* ---- Plain lists (booking, services) ---- */
+.notes {
+  width: min(100%, var(--col));
+  margin: 3.5rem auto 0;
+}
+.notes h2 {
+  font-size: clamp(1.65rem, 3vw, 2.1rem);
+  line-height: 1.05;
+  margin-bottom: 0.4rem;
+}
+.note {
+  padding: 1.15rem 0;
+  border-top: 1px solid var(--line);
+}
+.note:last-child { border-bottom: 1px solid var(--line); }
+.note h3 {
+  font-family: var(--body);
+  font-weight: 500;
+  font-size: 1.05rem;
+  margin-bottom: 0.3rem;
+}
+.note p { max-width: 38rem; }
+
+/* ---- Clips ---- */
+.clips {
+  width: min(100%, var(--col));
+  margin: 3.25rem auto 0;
+  display: grid;
+  gap: 2.25rem;
+}
+.clip figcaption {
+  font-family: var(--display);
+  font-size: 1.35rem;
+  line-height: 1;
+  margin-bottom: 0.65rem;
+}
+.frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  background: #111;
+}
+.frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+/* ---- Letter / contact ---- */
+.letter {
+  width: min(100%, var(--col));
+  margin: 4.75rem auto 0;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 1.25rem;
+}
+.letter h2 {
+  font-size: clamp(1.8rem, 3vw, 2.3rem);
+  line-height: 1;
+  margin-bottom: 1.5rem;
+}
+.field { margin-bottom: 1.2rem; }
+.field label {
+  display: block;
+  margin-bottom: 0.15rem;
+  font-size: 0.98rem;
+}
+.field input,
+.field textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--ink);
+  border-radius: 0;
+  padding: 0.55rem 0.7rem;
+  line-height: 1.4;
+}
+.field textarea {
+  min-height: 8rem;
+  resize: vertical;
+}
+.field input::placeholder,
+.field textarea::placeholder {
+  color: rgba(22, 20, 15, 0.4);
+}
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+}
+.send {
+  margin-top: 0.4rem;
+  background: var(--ink);
+  color: var(--paper);
+  border: 0;
+  border-radius: 0;
+  padding: 0.7rem 1.35rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.send:hover { opacity: 0.82; }
+.letter .reach {
+  margin-top: 1.35rem;
+  font-size: 0.98rem;
+}
+.letter .reach a { text-decoration: underline; text-underline-offset: 0.18em; }
+
+/* ---- Footer ---- */
+.colophon {
+  margin-top: 4.5rem;
+  border-top: 1px solid var(--line);
+  padding: 1.35rem 0 2rem;
+  font-size: 0.92rem;
+}
+.colophon p + p { margin-top: 0.3rem; }
+.colophon a:hover { text-decoration: underline; text-underline-offset: 0.18em; }
+.colophon .socials { display: flex; gap: 1.1rem; }
+
+@media (max-width: 800px) {
+  .sheet { width: min(var(--sheet), calc(100% - 2rem)); }
+  .menu-btn { display: inline-flex; }
+  .form-row { grid-template-columns: 1fr; }
+  .nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0.7rem;
+    padding: 0.35rem 0 1rem;
+    background: var(--paper);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav.is-open { display: flex; }
+  .mast-inner { width: min(var(--sheet), calc(100% - 2rem)); }
+  .split {
+    display: block;
+    margin-top: 2.25rem;
+  }
+  .home-copy { padding-top: 3rem; }
+  .side-drawing {
+    width: 8rem;
+    margin: 1.75rem 0 0;
+    justify-self: auto;
+  }
+  .index a {
+    grid-template-columns: 1fr;
+    gap: 0.2rem;
+  }
+  .index a small { text-align: left; }
+  .poster { padding-inline: 1rem; }
+  .lockup { gap: 0.22em; }
+}
+
+/* Home only: headings centred on the page, writing on the left edge.
+   On a phone the knob opens a full-screen menu. */
+body.home-mock .poster {
+  min-height: 0;
+  padding: 4.5rem 0 0.25rem;
+}
+body.home-mock .lockup {
+  max-width: 100%;
+  font-size: clamp(1.7rem, 8vw, 6.75rem);
+}
+body.home-mock .poster h1 { min-width: 0; }
+body.home-mock .split,
+body.home-mock .index,
+body.home-mock .notes-list,
+body.home-mock .letter {
+  width: 100%;
+  max-width: none;
+  margin-left: 0;
+  margin-right: 0;
+}
+body.home-mock .home-copy { padding-top: 1.75rem; }
+body.home-mock .standfirst,
+body.home-mock .prose,
+body.home-mock .notes-list blockquote,
+body.home-mock .letter form,
+body.home-mock .letter .reach {
+  max-width: 40rem;
+  margin-left: 0;
+  margin-right: 0;
+  text-align: left;
+}
+body.home-mock .letter h2,
+body.home-mock .index a span {
+  text-align: center;
+}
+body.home-mock .index a {
+  display: block;
+  text-align: center;
+}
+body.home-mock .index a small {
+  display: block;
+  margin-top: 0.35rem;
+  text-align: center;
+}
+
+@media (max-width: 800px) {
+  body.home-mock .menu-btn { z-index: 30; }
+  body.home-mock.nav-open { overflow: hidden; }
+  body.home-mock .nav.is-open {
+    position: fixed;
+    inset: 0;
+    z-index: 15;
+    margin: 0;
+    padding: 5.5rem 1.5rem 2rem;
+    background: var(--paper);
+    border: 0;
+    align-items: center;
+    justify-content: center;
+    gap: 1.5rem;
+  }
+  body.home-mock .nav.is-open a {
+    font-family: var(--display);
+    font-size: clamp(2rem, 8vw, 2.8rem);
+    line-height: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
