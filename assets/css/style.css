@@ -138,30 +138,6 @@ section { padding: clamp(3rem, 7vw, 6rem) 0; }
   border-top: 1px solid var(--ink-faint);
 }
 
-/* ---- Reveal-on-scroll ---- */
-.reveal {
-  opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.7s ease, transform 0.7s ease;
-}
-.reveal.is-visible {
-  opacity: 1;
-  transform: translateY(0);
-}
-.reveal-stagger.is-visible > * { opacity: 1; transform: translateY(0); }
-.reveal-stagger > * {
-  opacity: 0;
-  transform: translateY(20px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
-}
-.reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0.05s; }
-.reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.15s; }
-.reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.25s; }
-.reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.35s; }
-.reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.45s; }
-.reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 0.55s; }
-.reveal-stagger.is-visible > *:nth-child(7) { transition-delay: 0.65s; }
-
 /* ---- Typography ---- */
 h1, .h1 {
   font-family: var(--font-display);
@@ -213,14 +189,23 @@ p.lede {
   stroke-dashoffset: 0;
 }
 
-/* ---- Header / Nav (corner icon + full overlay menu) ---- */
+/* ---- Header / Nav
+   Wide screens: page names in the header, current page underlined.
+   Narrow screens: the knob opens the full-screen menu. ---- */
 .site-header {
   position: sticky;
   top: 0;
   z-index: 100;
+  background: transparent;
+  border-bottom: 1px solid var(--ink-faint);
+}
+.site-header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
   background: color-mix(in srgb, var(--paper) 92%, transparent);
   backdrop-filter: blur(6px);
-  border-bottom: 1px solid var(--ink-faint);
 }
 .site-header .wrap {
   display: flex;
@@ -251,7 +236,8 @@ p.lede {
 }
 
 /* Tuning-dial menu button: the tick shows which "channel" (page) you're on,
-   and the number in the middle confirms it. Always visible. */
+   and the number in the middle confirms it. Phone only — wide screens use
+   the text menu instead. */
 .nav-toggle {
   position: relative;
   z-index: 210;
@@ -304,16 +290,11 @@ p.lede {
   gap: 1.6rem;
 }
 .main-nav.is-open { display: flex; }
-.main-nav a {
-  opacity: 0;
-  transform: translateY(14px);
-}
 .main-nav a:not(.btn) {
   font-family: var(--font-body);
   font-weight: 500;
   font-size: clamp(1.3rem, 4vw, 1.8rem);
   letter-spacing: 0.02em;
-  transition: opacity 0.4s ease, transform 0.4s ease;
 }
 .main-nav .channel-num {
   font-family: var(--font-display);
@@ -321,17 +302,60 @@ p.lede {
   font-size: 0.65em;
   margin-right: 0.4em;
 }
-.main-nav.is-open a { opacity: 1; transform: translateY(0); }
-.main-nav.is-open a:nth-child(1) { transition-delay: 0.05s; }
-.main-nav.is-open a:nth-child(2) { transition-delay: 0.1s; }
-.main-nav.is-open a:nth-child(3) { transition-delay: 0.15s; }
-.main-nav.is-open a:nth-child(4) { transition-delay: 0.2s; }
-.main-nav.is-open a.btn { transition-delay: 0.25s; }
 .main-nav a[aria-current="page"] {
   text-decoration: underline;
   text-underline-offset: 0.18em;
 }
 body.nav-open { overflow: hidden; }
+
+/* Desktop: a plain row of page names, lined up with the header.
+   The bar itself ignores clicks so the wordmark underneath stays usable. */
+@media (min-width: 801px) {
+  .nav-toggle { display: none; }
+  .main-nav,
+  .main-nav.is-open {
+    display: flex;
+    position: static;
+    inset: auto;
+    height: auto;
+    z-index: auto;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-end;
+    gap: clamp(0.7rem, 1.4vw, 1.35rem);
+    padding: 0;
+    background: transparent;
+    pointer-events: auto;
+  }
+  .main-nav a {
+    white-space: nowrap;
+  }
+  .main-nav a:not(.btn),
+  .main-nav .btn {
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: clamp(0.88rem, 1.05vw, 0.98rem);
+    letter-spacing: 0;
+  }
+  .main-nav .channel-num { display: none; }
+  .main-nav a:hover,
+  .main-nav a[aria-current="page"] {
+    text-decoration: underline;
+    text-underline-offset: 0.28em;
+  }
+  .main-nav .btn,
+  .main-nav .btn:hover,
+  .main-nav .btn:focus-visible {
+    background: transparent;
+    color: inherit;
+    border-color: transparent;
+    padding: 0;
+    border-radius: 0;
+    box-shadow: none;
+    transform: none;
+  }
+  body.nav-open { overflow-x: hidden; overflow-y: auto; }
+}
 
 /* ---- Buttons ---- */
 .btn {
@@ -512,18 +536,10 @@ body.nav-open { overflow: hidden; }
   position: fixed;
   z-index: 110;
 }
-.intro-name span {
-  display: inline-block;
-  animation: rise 0.8s ease forwards;
-}
-@keyframes rise {
-  from { opacity: 0; transform: translateY(18px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
 /* The big name IS the wordmark on Home — hide the header's own wordmark
    (kept in the DOM so layout/spacing stays identical) and only fade in
-   the menu icon once the name has settled. */
+   the menu once the name has settled. On a wide screen that menu is the
+   row of page names; on a phone it is the knob. */
 body.home .site-header {
   position: fixed;
   top: 0; left: 0; right: 0;
@@ -534,6 +550,11 @@ body.home .site-header {
 }
 body.home .site-header .wordmark {
   visibility: hidden;
+}
+body.home.nav-open .site-header {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -546,6 +567,8 @@ body.home .site-header .wordmark {
   body.home .site-header .wordmark {
     visibility: visible !important;
   }
+}
+@media (prefers-reduced-motion: reduce) {
   .intro-spacer { height: auto; padding: 4rem 0 2rem; }
   .intro-lockup {
     position: static;
@@ -563,7 +586,6 @@ body.home .site-header .wordmark {
     margin: 0;
     transform: none !important;
   }
-  .intro-name span { animation: none; opacity: 1; transform: none; }
 }
 
 /* ---- Numbered list (set-list style — replaces boxed cards) ---- */
@@ -1421,11 +1443,3 @@ body.figs .figs-hero .wrap {
   .list-numbered-item { grid-template-columns: 2.4rem 1fr; }
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .hero-title span, .reveal, .reveal-stagger > *, .main-nav a {
-    animation: none !important;
-    transition: none !important;
-    opacity: 1 !important;
-    transform: none !important;
-  }
-}

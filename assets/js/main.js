@@ -3,33 +3,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  /* Scroll-reveal via IntersectionObserver */
-  const revealEls = document.querySelectorAll(".reveal, .reveal-stagger");
-  if ("IntersectionObserver" in window && revealEls.length) {
-    const io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            io.unobserve(entry.target);
-          }
-        });
-      },
-      { threshold: 0.05 }
-    );
-    revealEls.forEach((el) => io.observe(el));
-  } else {
-    revealEls.forEach((el) => el.classList.add("is-visible"));
-  }
-
-  /* Hero title staggered letter/word rise */
-  document.querySelectorAll("[data-stagger-text]").forEach((el) => {
-    const words = el.textContent.trim().split(/\s+/);
-    el.innerHTML = words
-      .map((word, i) => `<span style="animation-delay:${0.08 * i}s">${word}</span>`)
-      .join(" ");
-  });
-
   /* Nav overlay toggle */
   const toggle = document.querySelector(".nav-toggle");
   const nav = document.querySelector(".main-nav");
@@ -45,6 +18,12 @@ document.addEventListener("DOMContentLoaded", () => {
     nav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setOpen(false)));
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") setOpen(false);
+    });
+    /* The text menu replaces the knob on wide screens, so an open
+       overlay should not stay locked if the window crosses that line. */
+    const desktopNav = window.matchMedia("(min-width: 801px)");
+    desktopNav.addEventListener("change", () => {
+      if (desktopNav.matches) setOpen(false);
     });
   }
 
