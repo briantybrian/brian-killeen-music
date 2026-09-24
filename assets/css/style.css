@@ -8,13 +8,17 @@
   navigation: auto;
 }
 
-/* ---- Fonts (self-hosted, no external requests) ---- */
+/* ---- Fonts (self-hosted files, not embedded in the HTML) ----
+   Ferrum is also preloaded from each page <head>. font-display: block
+   keeps the fallback from painting, so the name does not swap into Ferrum
+   a moment after first paint. Body faces stay on swap so paragraphs
+   stay readable if their files are still in flight. */
 @font-face {
   font-family: "Ferrum";
   src: url("../fonts/Ferrum-Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
-  font-display: swap;
+  font-display: block;
 }
 @font-face {
   font-family: "Hyperlegible Sans";

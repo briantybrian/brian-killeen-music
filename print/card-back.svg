@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="85mm" height="55mm" viewBox="0 0 85 55">
+  <title>Business card back — Brian Killeen</title>
+  <rect width="85" height="55" fill="#ffffff"/>
+  <rect x="7" y="4.4" width="71" height="0.22" fill="#e8b923"/>
+  <rect x="7" y="50.4" width="71" height="0.22" fill="#e8b923"/>
+  <text x="42.5" y="8.55" text-anchor="middle" fill="#8a6b12" font-family="Georgia, 'Times New Roman', serif" font-size="2.15" letter-spacing="0.38">SCAN TO LISTEN</text>
+  <image href="qr-code-styled.svg" x="28.5" y="11.2" width="28" height="28"/>
+  <text x="42.5" y="43.5" text-anchor="middle" fill="#181510" font-family="Georgia, 'Times New Roman', serif" font-size="3.2">briankilleenmusic.ie</text>
+  <text x="42.5" y="47.15" text-anchor="middle" fill="#181510" font-family="Helvetica, Arial, sans-serif" font-size="1.9" letter-spacing="0.22">WEDDINGS  ·  SESSIONS  ·  SONGS</text>
+</svg>
