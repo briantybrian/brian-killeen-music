@@ -691,6 +691,9 @@ body.home.nav-open .site-header {
   justify-content: center;
   margin-top: 0.5rem;
 }
+.featured-video .video-library-more {
+  margin-top: 1.75rem;
+}
 
 /* ---- Setlist track list (Listen page) ---- */
 .setlist-library { position: relative; }
@@ -1108,7 +1111,8 @@ body.player-open main { padding-bottom: 5.5rem; }
 .contact-socials {
   display: flex;
   justify-content: center;
-  gap: 1.75rem;
+  flex-wrap: wrap;
+  gap: 0.6rem 1.75rem;
   font-size: 0.95rem;
   color: var(--ink-soft);
 }
@@ -1120,6 +1124,12 @@ body.player-open main { padding-bottom: 5.5rem; }
   color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 0.15em;
+}
+@media (max-width: 520px) {
+  .contact-socials {
+    gap: 0.45rem 1.05rem;
+    font-size: 0.9rem;
+  }
 }
 
 /* ---- Contact form ---- */
