@@ -467,6 +467,11 @@ body.nav-open { overflow: hidden; }
   justify-content: center;
   gap: 1rem;
 }
+.hero-bio {
+  margin-top: 1.65rem;
+  margin-inline: auto;
+  max-width: 60ch;
+}
 
 /* ---- Home poster: the name fills the first screen on its own.
    The opening is pulled up under that screen, so it comes into
