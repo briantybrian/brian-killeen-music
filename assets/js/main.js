@@ -43,19 +43,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* Home: the big name is ordinary page content and scrolls away at
      full size. The header appears, wordmark already at its own size,
-     once that name has left the top of the screen. */
+     once that name has left the top of the screen. An intersection
+     observer follows the name even if the page scrolls on document
+     rather than window. */
   const introLockup = document.querySelector(".intro-lockup");
   const introPair = document.querySelector(".intro-pair");
   const introHeader = document.querySelector(".site-header");
 
   if (introLockup && introHeader && !reduceMotion) {
-    let ticking = false;
+    const mark = introPair || introLockup;
 
     const applyHeader = () => {
-      const mark = introPair || introLockup;
-      const cleared = mark.getBoundingClientRect().bottom <= 0;
-      introHeader.classList.toggle("is-shown", cleared);
-      ticking = false;
+      introHeader.classList.toggle("is-shown", mark.getBoundingClientRect().bottom <= 0);
     };
 
     // Fresh landings on / start at the large centred name. Keep hash
@@ -66,14 +65,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     applyHeader();
-    requestAnimationFrame(applyHeader);
+    if ("IntersectionObserver" in window) {
+      const observer = new IntersectionObserver(applyHeader);
+      observer.observe(mark);
+    }
+    window.addEventListener("scroll", applyHeader, { passive: true });
+    document.addEventListener("scroll", applyHeader, { passive: true });
     window.addEventListener("pageshow", applyHeader);
-    window.addEventListener("scroll", () => {
-      if (!ticking) {
-        requestAnimationFrame(applyHeader);
-        ticking = true;
-      }
-    }, { passive: true });
     window.addEventListener("resize", applyHeader);
   } else if (!introLockup) {
     history.scrollRestoration = "auto";
