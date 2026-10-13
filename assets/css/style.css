@@ -97,33 +97,15 @@ body::before {
   background-size: 220px 220px;
 }
 
-/* ---- Name figure (Home only) ----
-   Hand-traced silhouette used as a logomark beside "Brian Killeen" — sized
-   to match the live-measured cap-height of the "K" (see .k-measure and
-   main.js), so it scales exactly with the text at every point in the
-   scroll. Stays attached to the name the whole way from the big centred
-   landing state through to settling beside it in the header. */
+/* ---- Name figure (Home poster only) ----
+   Hand-traced silhouette beside the big "Brian Killeen". Sized in em
+   so it stays with the name. The header uses its own .wordmark-figure. */
 .name-figure {
   background-image: url("../img/name-figure.svg");
   background-repeat: no-repeat;
   background-size: contain;
   pointer-events: none;
   flex-shrink: 0;
-}
-/* Invisible reference glyph, same font/weight, font-size synced to the
-   name's current size each frame — measured, never shown. */
-.k-measure {
-  position: fixed;
-  top: -9999px;
-  left: -9999px;
-  visibility: hidden;
-  white-space: nowrap;
-  font-family: var(--font-display);
-  font-weight: 400;
-  line-height: 1;
-}
-@media (prefers-reduced-motion: reduce) {
-  .name-figure { display: none; }
 }
 
 /* ---- Layout helpers ---- */
@@ -484,27 +466,24 @@ body.nav-open { overflow: hidden; }
   gap: 1rem;
 }
 
-/* ---- Intro stage (Home only): name recedes into the distance on scroll,
-   then settles into the header wordmark as the page reveals itself ---- */
-.intro-spacer {
-  height: 105vh;
-}
-/* CSS owns the first paint: a full-viewport flex group so the name is
-   large and centred even before JS/fonts, and never depends on a
-   measured top/left that can be wrong on the first frame. */
+/* ---- Home poster: the name fills the first screen on its own.
+   The opening is pulled up under that screen, so it comes into
+   view partway through the first scroll rather than after a
+   full extra screen of paper. The header stays hidden until
+   the name has left, then appears at its own size. ---- */
 .intro-lockup {
-  position: fixed;
-  inset: 0;
-  z-index: 110;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
-  pointer-events: none;
+  padding: 0 1rem;
   font-size: clamp(3.2rem, 15vw, 11rem);
 }
-/* Name + figure stay one flex unit for the whole intro — JS moves this
-   pair, never the two pieces independently (which let them split on
-   narrower viewports when the h1 reported full-window width). */
+body.home .hero {
+  /* Sits just under the fold, so the name opens alone and this
+     heading enters on the first part of the scroll. */
+  padding-top: 1.25rem;
+}
 .intro-pair {
   display: flex;
   align-items: center;
@@ -529,32 +508,26 @@ body.nav-open { overflow: hidden; }
   flex: 0 0 auto;
 }
 @media (max-width: 700px) {
-  .intro-lockup { padding: 0 1rem; font-size: clamp(2rem, 9vw, 4.5rem); }
+  .intro-lockup { font-size: clamp(2.65rem, 12.5vw, 4.75rem); }
   .intro-pair { gap: 16px; }
 }
-.intro-lockup.is-driven .intro-pair {
-  position: fixed;
-  z-index: 110;
-}
-/* The big name IS the wordmark on Home — hide the header's own wordmark
-   (kept in the DOM so layout/spacing stays identical) and only fade in
-   the menu once the name has settled. On a wide screen that menu is the
-   row of page names; on a phone it is the knob. */
 body.home .site-header {
   position: fixed;
   top: 0; left: 0; right: 0;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity 0.15s ease;
+  transition: opacity 0.15s ease, visibility 0s linear 0.15s;
 }
-body.home .site-header .wordmark {
-  visibility: hidden;
-}
+body.home .site-header.is-shown,
 body.home.nav-open .site-header {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transition: opacity 0.15s ease, visibility 0s linear 0s;
+}
+body.home #contact {
+  scroll-margin-top: 4.5rem;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -564,27 +537,13 @@ body.home.nav-open .site-header {
     visibility: visible !important;
     pointer-events: auto !important;
   }
-  body.home .site-header .wordmark {
-    visibility: visible !important;
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .intro-spacer { height: auto; padding: 4rem 0 2rem; }
   .intro-lockup {
-    position: static;
-    display: flex;
-    justify-content: center;
-    inset: auto;
-    padding: 0;
+    min-height: 0;
+    padding: 2.5rem 1rem 0;
   }
-  .intro-pair {
-    position: static;
-  }
-  .intro-name {
-    position: static;
-    display: block;
-    margin: 0;
-    transform: none !important;
+  body.home .hero {
+    margin-top: 0;
+    padding-top: 1.5rem;
   }
 }
 
