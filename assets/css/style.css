@@ -491,6 +491,9 @@ body.home .hero {
      heading enters on the first part of the scroll. */
   padding-top: 1.25rem;
 }
+body.home .hero-title {
+  margin-bottom: 0.7rem;
+}
 .intro-pair {
   display: flex;
   align-items: center;
